@@ -1,0 +1,65 @@
+plugins {
+    id 'java-library' // Вместо 'java'
+    id 'maven-publish' // Для публикации библиотеки
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    withSourcesJar() // Генерировать sources JAR
+    withJavadocJar() // Генерировать javadoc JAR
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal() // Добавить локальный Maven репозиторий
+}
+
+dependencies {
+    // Основные зависимости
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2' // Вместо spring-boot-starter-validation
+
+    // Lombok с указанием версии
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    // Тестовая зависимость
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Конфигурация публикации
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'core'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+        }
+    }
+    repositories {
+        mavenLocal() // Публикация в локальный Maven
+    }
+}
