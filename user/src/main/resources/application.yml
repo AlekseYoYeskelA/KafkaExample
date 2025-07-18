@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: user
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:

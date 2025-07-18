@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 
@@ -47,15 +46,6 @@ public class KafkaConsumerConfig {
                         "com.example.core.dto.*," +
                         "*");
 
-        // 2. Явно укажите типы для десериализации
-//        configProps.put(JsonDeserializer.TYPE_MAPPINGS,
-//                "createUserCommand:com.example.core.dto.command.CreateUserCommand," +
-//                        "updateUserCommand:com.example.core.dto.command.UpdateUserCommand," +
-//                        "compensateUserCommand:com.example.core.dto.command.CompensateUserCommand," +
-//                        "userCreatedEvent:com.example.core.dto.event.UserCreatedEvent," +
-//                        "userUpdatedEvent:com.example.core.dto.event.UserUpdatedEvent," +
-//                        "userUpdateResponse:com.example.core.dto.response.UserUpdateResponse");
-
         // 3. Используйте ErrorHandlingDeserializer
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
@@ -73,8 +63,6 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(1); // Параллельная обработка 3 партиций
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE); // Ручное подтверждение
         return factory;
     }
 }
