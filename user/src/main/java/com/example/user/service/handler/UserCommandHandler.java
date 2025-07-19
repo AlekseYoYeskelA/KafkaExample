@@ -28,7 +28,9 @@ public class UserCommandHandler {
     private final UserServiceImpl userService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @KafkaListener(topics = "user.create.command")
+    @KafkaListener(topics = "user.create.command",
+            groupId = "user-group",
+            containerFactory = "kafkaListenerContainerFactory")
     public void handleCreateUserCommand(CreateUserCommand command) {
         log.info("Received CreateUserCommand for saga: {}", command.getSagaId());
         try {
@@ -40,7 +42,23 @@ public class UserCommandHandler {
         }
     }
 
-    @KafkaListener(topics = "user.update.command")
+    @KafkaListener(topics = "user.create_with_update.command",
+            groupId = "user-group",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void handleCreateWithUpdateCommand(CreateUserCommand command) {
+        log.info("Received CreateWithUpdateCommand for saga: {}", command.getSagaId());
+        try {
+            User user = userService.createUser(command);
+            sendUserCreatedBeforeUpdateEvent(command.getSagaId(), user);
+            log.info("User creation before update processed: {}", user.getId());
+        } catch (Exception e) {
+            log.error("Failed to create user: {}", e.getMessage(), e);
+        }
+    }
+
+    @KafkaListener(topics = "user.update.command",
+            groupId = "user-group",
+            containerFactory = "kafkaListenerContainerFactory")
     public void handleUpdateUserCommand(UpdateUserCommand command) {
         log.info("Received UpdateUserCommand for user: {}", command.getUserId());
         try {
@@ -53,7 +71,9 @@ public class UserCommandHandler {
         }
     }
 
-    @KafkaListener(topics = "user.compensate.command")
+    @KafkaListener(topics = "user.compensate.command",
+            groupId = "user-group",
+            containerFactory = "kafkaListenerContainerFactory")
     public void handleCompensateCommand(CompensateUserCommand command) {
         log.info("Received CompensateUserCommand for user: {}", command.getUserId());
         try {
@@ -64,14 +84,26 @@ public class UserCommandHandler {
         }
     }
 
+
     private void sendUserCreatedEvent(UUID sagaId, User user) {
         UserCreatedEvent event = new UserCreatedEvent();
         BeanUtils.copyProperties(user, event);
         event.setSagaId(sagaId);
         event.setUserId(user.getId());
-        kafkaTemplate.send("user.created.event", event);
+        kafkaTemplate.send("user.created.event", 0, "USER_CREATED", event);
         log.debug("Sent UserCreatedEvent for user: {}", user.getId());
     }
+
+    private void sendUserCreatedBeforeUpdateEvent(UUID sagaId, User user) {
+        UserCreatedEvent event = new UserCreatedEvent();
+        BeanUtils.copyProperties(user, event);
+        event.setSagaId(sagaId);
+        event.setUserId(user.getId());
+        kafkaTemplate.send("user.created.event", 1, "USER_CREATED_BEFORE_UPDATE" , event);
+        log.debug("Sent UserCreatedEvent before update for user: {}", user.getId());
+    }
+
+
 
     private void sendUserUpdateResponse(UUID sagaId, UUID userId, boolean success, String error) {
         UserUpdateResponse response = new UserUpdateResponse();

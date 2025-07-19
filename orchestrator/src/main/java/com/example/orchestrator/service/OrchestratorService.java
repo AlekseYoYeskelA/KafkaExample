@@ -1,8 +1,6 @@
 package com.example.orchestrator.service;
 
 
-
-
 import com.example.core.event.UserCreatedEvent;
 import com.example.core.request.UserCreateRequest;
 import com.example.core.request.UserUpdateRequest;
@@ -21,9 +19,19 @@ public interface OrchestratorService {
     UUID startCreateUserSaga(UserCreateRequest request);
 
     /**
+     * Запускает сагу создания пользователя вместе с обновлением
+     */
+    UUID startCreateUserWithUpdateCommand(UserCreateRequest request);
+
+    /**
      * Обрабатывает событие создания пользователя
      */
     void handleUserCreatedEvent(UserCreatedEvent event);
+
+    /**
+     * Обрабатывает событие создания пользователя вместе с обновлением
+     */
+    void handleUserCreatedWithUpdateEvent(UserCreatedEvent event);
 
     /**
      * Запускает сагу обновления пользователя

@@ -6,6 +6,7 @@ import com.example.orchestrator.service.OrchestratorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,14 +25,27 @@ public class KafkaEventConsumer {
      * Обрабатывает события создания пользователей.
      */
     @KafkaListener(
-            topics = "#{kafkaTopicsConfig.userCreatedEventTopic}",
+            topicPartitions = @TopicPartition(topic = "#{kafkaTopicsConfig.userCreatedEventTopic}",
+                    partitions = {"0"}),
             groupId = "orchestrator-group",
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void handleUserCreatedEvent(UserCreatedEvent event) {
         log.info("Received UserCreatedEvent for user: {}", event.getUserId());
-        log.debug("Event details: {}", event);
+        log.debug("Created user details: {}", event);
         orchestratorService.handleUserCreatedEvent(event);
+    }
+
+    @KafkaListener(
+            topicPartitions = @TopicPartition(topic = "#{kafkaTopicsConfig.userCreatedEventTopic}",
+                    partitions = {"1"}),
+            groupId = "orchestrator-group",
+            containerFactory = "kafkaListenerContainerFactory"
+    )
+    public void handleUserCreatedWithUpdateEvent(UserCreatedEvent event) {
+        log.info("Received UserCreatedWithUpdateEvent for user: {}", event.getUserId());
+        log.debug("Created user before update details: {}", event);
+        orchestratorService.handleUserCreatedWithUpdateEvent(event);
     }
 
     /**

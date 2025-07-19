@@ -40,6 +40,7 @@ spring:
 kafka:
   topics:
     user-create-command: user.create.command
+    user-create-with-update-command: user.create_with_update.command
     user-update-command: user.update.command
     user-compensate-command: user.compensate.command
     user-created-event: user.created.event
