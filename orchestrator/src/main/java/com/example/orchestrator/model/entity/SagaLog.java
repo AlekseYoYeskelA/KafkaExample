@@ -12,7 +12,7 @@ import java.util.UUID;
  * Сущность для хранения логов этапов выполнения саги.
  */
 @Entity
-@Table(name = "saga_logs_new")
+@Table(name = "saga_logs")
 @Getter
 @Setter
 public class SagaLog {

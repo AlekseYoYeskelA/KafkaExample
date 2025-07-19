@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.19.xsd">
+
+    <changeSet id="create_schema_orchestrator" author="Aleksey_Yeskela">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS orchestrator_schema;
+        </sql>
+    </changeSet>
+
+    <changeSet id="001_create_saga_logs_table" author="Aleksey_Yeskela">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists
+                        catalogName="user_orchestrator_db"
+                        schemaName="orchestrator_schema"
+                        tableName="saga_logs"/>
+            </not>
+        </preConditions>
+
+        <createTable
+                catalogName="user_orchestrator_db"
+                schemaName="orchestrator_schema"
+                tableName="saga_logs">
+
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="saga_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="details" type="varchar(500)"/>
+            <column name="timestamp" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

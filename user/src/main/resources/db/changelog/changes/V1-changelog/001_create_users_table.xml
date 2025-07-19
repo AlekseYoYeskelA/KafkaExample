@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.19.xsd">
+
+    <changeSet id="create_schema_user" author="Aleksey_Yeskela">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS user_service_schema;
+        </sql>
+    </changeSet>
+
+    <changeSet id="001_create_users_table" author="Aleksey_Yeskela">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists
+                        catalogName="user_service_db"
+                        schemaName="user_service_schema"
+                        tableName="users"/>
+            </not>
+        </preConditions>
+
+        <createTable
+                catalogName="user_service_db"
+                schemaName="user_service_schema"
+                tableName="users">
+
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints unique="true" uniqueConstraintName="uk_users_email"/>
+            </column>
+            <column name="created_at" type="timestamp(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

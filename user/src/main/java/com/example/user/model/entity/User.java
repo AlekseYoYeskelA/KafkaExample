@@ -16,7 +16,7 @@ import java.util.UUID;
  * Реализует концепцию логического удаления через поле {@code deleted}.
  */
 @Entity
-@Table(name = "users_new")
+@Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
