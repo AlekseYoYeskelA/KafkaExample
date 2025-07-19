@@ -11,6 +11,7 @@ import com.example.user.model.entity.User;
 import com.example.user.model.repository.UserRepository;
 import com.example.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
      * @throws UserNotFoundException если пользователь не найден или удалён
      * @throws UserUpdateException   при сбое обновления
      */
+    @SneakyThrows
     @Override
     @Transactional
     public User updateUser(UpdateUserCommand command) {
@@ -88,6 +90,8 @@ public class UserServiceImpl implements UserService {
                 }
             }
         });
+
+        Thread.sleep(5000);
 
         // Эмуляция ошибки в 50% случаев
         if (random.nextBoolean()) {
