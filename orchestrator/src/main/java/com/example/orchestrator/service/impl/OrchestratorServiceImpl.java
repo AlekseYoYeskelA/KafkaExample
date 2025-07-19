@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -56,6 +57,7 @@ public class OrchestratorServiceImpl implements OrchestratorService {
         return sagaId;
     }
 
+
     @Override
     @Transactional
     public void handleUserCreatedEvent(UserCreatedEvent event) {
@@ -68,7 +70,29 @@ public class OrchestratorServiceImpl implements OrchestratorService {
                         "User created: " + event
                 )
         );
+
+        Map<String, Object> updateFields = Map.of(
+                "lastName", event.getLastName() + "_UPDATED"
+        );
+
+        UpdateUserCommand command = new UpdateUserCommand(
+                event.getSagaId(),
+                event.getUserId(),
+                updateFields
+        );
+
+        // Логируем инициацию обновления
+        sagaLogRepository.save(
+                SagaLog.commandSent(
+                        event.getSagaId(),
+                        "UPDATE_USER_INITIATED",
+                        "Update fields: " + updateFields
+                )
+        );
+
+        kafkaTemplate.send(topicsConfig.getUserUpdateCommandTopic(), "UPDATE_USER", command);
     }
+
 
     @Override
     @Transactional

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/KafkaExample.iml" filepath="$PROJECT_DIR$/KafkaExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/orchestrator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/orchestrator.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/user.main.iml" />
     </modules>
