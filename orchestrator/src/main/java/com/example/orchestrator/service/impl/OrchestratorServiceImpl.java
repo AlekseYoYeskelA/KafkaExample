@@ -57,28 +57,6 @@ public class OrchestratorServiceImpl implements OrchestratorService {
         return sagaId;
     }
 
-    @Override
-    @Transactional
-    public UUID startCreateUserWithUpdateCommand(UserCreateRequest request) {
-        UUID sagaId = UUID.randomUUID();
-        log.info("Starting create with update user saga: {}", sagaId);
-
-        sagaLogRepository.save(
-                SagaLog.init(sagaId, "CREATE_USER_INITIATED", request.toString())
-        );
-
-        CreateUserCommand command = new CreateUserCommand(
-                sagaId,
-                request.getFirstName(),
-                request.getLastName(),
-                request.getEmail()
-        );
-
-        kafkaTemplate.send(topicsConfig.getUserCreateWithUpdateTopic(), "CREATE_USER_BEFORE_UPDATE", command);
-
-        return sagaId;
-    }
-
 
     @Override
     @Transactional
@@ -86,29 +64,30 @@ public class OrchestratorServiceImpl implements OrchestratorService {
         log.info("Received UserCreatedEvent for saga: {}", event.getSagaId());
 
         sagaLogRepository.save(
-                SagaLog.eventReceived(event.getSagaId(), "USER_CREATED", "User created: " + event)
-        );
-    }
-
-    @Override
-    @Transactional
-    public void handleUserCreatedWithUpdateEvent(UserCreatedEvent event) {
-        log.info("Received UserCreatedEvent before update for saga: {}", event.getSagaId());
-        UUID sagaId = event.getSagaId();
-
-        sagaLogRepository.save(
-                SagaLog.eventReceived(sagaId, "USER_CREATED", "User created: " + event)
+                SagaLog.eventReceived(
+                        event.getSagaId(),
+                        "USER_CREATED",
+                        "User created: " + event
+                )
         );
 
         Map<String, Object> updateFields = Map.of(
                 "lastName", event.getLastName() + "_UPDATED"
         );
 
-        UpdateUserCommand command = new UpdateUserCommand(sagaId, event.getUserId(), updateFields);
+        UpdateUserCommand command = new UpdateUserCommand(
+                event.getSagaId(),
+                event.getUserId(),
+                updateFields
+        );
 
         // Логируем инициацию обновления
         sagaLogRepository.save(
-                SagaLog.commandSent(sagaId, "UPDATE_USER_INITIATED", "Update fields: " + updateFields)
+                SagaLog.commandSent(
+                        event.getSagaId(),
+                        "UPDATE_USER_INITIATED",
+                        "Update fields: " + updateFields
+                )
         );
 
         kafkaTemplate.send(topicsConfig.getUserUpdateCommandTopic(), "UPDATE_USER", command);

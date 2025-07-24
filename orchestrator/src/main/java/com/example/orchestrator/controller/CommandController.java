@@ -36,13 +36,6 @@ public class CommandController {
         return ResponseEntity.ok(new SagaResponse(sagaId));
     }
 
-    @PostMapping("/saga")
-    public ResponseEntity<SagaResponse> startCreateWithUpdateUserSaga(@RequestBody UserCreateRequest request) {
-        log.info("Starting create with update user {}", request);
-        UUID sagaId = orchestratorService.startCreateUserWithUpdateCommand(request);
-        return ResponseEntity.ok(new SagaResponse(sagaId));
-    }
-
     /**
      * Обновляет существующего пользователя
      */

@@ -19,9 +19,6 @@ public class KafkaTopicsConfig {
     @Value("${kafka.topics.user-create-command}")
     private String userCreateCommandTopic;
 
-    @Value("${kafka.topics.user-create-with-update-command}")
-    private String userCreateWithUpdateTopic;
-
     @Value("${kafka.topics.user-update-command}")
     private String userUpdateCommandTopic;
 
@@ -38,14 +35,6 @@ public class KafkaTopicsConfig {
     @Bean
     public NewTopic userCreateCommandTopic() {
         return TopicBuilder.name(userCreateCommandTopic)
-                .partitions(1)
-                .replicas(1)
-                .build();
-    }
-
-    @Bean
-    NewTopic userCreateWithUpdateCommandTopic() {
-        return TopicBuilder.name(userCreateWithUpdateTopic)
                 .partitions(1)
                 .replicas(1)
                 .build();
@@ -70,7 +59,7 @@ public class KafkaTopicsConfig {
     @Bean
     public NewTopic userCreatedEventTopic() {
         return TopicBuilder.name(userCreatedEventTopic)
-                .partitions(2)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
