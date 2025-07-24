@@ -1,9 +1,10 @@
 package com.example.orchestrator.controller;
 
 
-import com.example.core.request.UserCreateRequest;
-import com.example.core.request.UserUpdateRequest;
-import com.example.core.response.SagaResponse;
+
+import com.example.core.dto.request.UserCreateRequest;
+import com.example.core.dto.request.UserUpdateRequest;
+import com.example.core.dto.response.SagaResponse;
 import com.example.orchestrator.service.OrchestratorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

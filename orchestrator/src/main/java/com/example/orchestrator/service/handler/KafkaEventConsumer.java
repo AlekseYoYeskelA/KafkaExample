@@ -1,7 +1,8 @@
 package com.example.orchestrator.service.handler;
 
-import com.example.core.event.UserCreatedEvent;
-import com.example.core.response.UserUpdateResponse;
+
+import com.example.core.dto.event.UserCreatedEvent;
+import com.example.core.dto.response.UserUpdateResponse;
 import com.example.orchestrator.service.OrchestratorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

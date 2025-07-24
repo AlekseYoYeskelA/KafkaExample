@@ -1,18 +1,18 @@
 package com.example.orchestrator.service.impl;
 
-
-import com.example.core.command.CompensateUserCommand;
-import com.example.core.command.CreateUserCommand;
-import com.example.core.command.UpdateUserCommand;
-import com.example.core.event.UserCreatedEvent;
-import com.example.core.request.UserCreateRequest;
-import com.example.core.request.UserUpdateRequest;
-import com.example.core.response.UserUpdateResponse;
+import com.example.core.dto.command.CompensateUserCommand;
+import com.example.core.dto.command.CreateUserCommand;
+import com.example.core.dto.command.UpdateUserCommand;
+import com.example.core.dto.event.UserCreatedEvent;
+import com.example.core.dto.request.UserCreateRequest;
+import com.example.core.dto.request.UserUpdateRequest;
+import com.example.core.dto.response.UserUpdateResponse;
 import com.example.orchestrator.config.kafka.KafkaTopicsConfig;
 import com.example.orchestrator.model.entity.SagaLog;
 import com.example.orchestrator.repository.SagaLogRepository;
 import com.example.orchestrator.service.OrchestratorService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Реализация сервиса оркестрации
@@ -39,6 +40,7 @@ public class OrchestratorServiceImpl implements OrchestratorService {
     @Transactional
     public UUID startCreateUserSaga(UserCreateRequest request) {
         UUID sagaId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
         log.info("Starting create user saga: {}", sagaId);
 
         sagaLogRepository.save(
@@ -47,6 +49,7 @@ public class OrchestratorServiceImpl implements OrchestratorService {
 
         CreateUserCommand command = new CreateUserCommand(
                 sagaId,
+                userId,
                 request.getFirstName(),
                 request.getLastName(),
                 request.getEmail()
@@ -58,6 +61,7 @@ public class OrchestratorServiceImpl implements OrchestratorService {
     }
 
 
+    @SneakyThrows
     @Override
     @Transactional
     public void handleUserCreatedEvent(UserCreatedEvent event) {
@@ -80,6 +84,8 @@ public class OrchestratorServiceImpl implements OrchestratorService {
                 event.getUserId(),
                 updateFields
         );
+
+        TimeUnit.SECONDS.sleep(5);
 
         // Логируем инициацию обновления
         sagaLogRepository.save(

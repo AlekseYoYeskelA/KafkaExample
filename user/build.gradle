@@ -38,7 +38,7 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    implementation 'com.example:core:0.0.1-SNAPSHOT'
+    implementation 'com.example:core:0.0.2-SNAPSHOT'
 }
 
 tasks.named('test') {

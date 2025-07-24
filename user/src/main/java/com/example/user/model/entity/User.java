@@ -26,7 +26,6 @@ import java.util.UUID;
 public class User {
     /** Уникальный идентификатор пользователя */
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     /** Имя пользователя */

@@ -42,7 +42,7 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
-    implementation 'com.example:core:0.0.1-SNAPSHOT'
+    implementation 'com.example:core:0.0.2-SNAPSHOT'
 }
 
 //openApiGenerate {

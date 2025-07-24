@@ -3,10 +3,12 @@ package com.example.orchestrator.service;
 
 
 
-import com.example.core.event.UserCreatedEvent;
-import com.example.core.request.UserCreateRequest;
-import com.example.core.request.UserUpdateRequest;
-import com.example.core.response.UserUpdateResponse;
+
+
+import com.example.core.dto.event.UserCreatedEvent;
+import com.example.core.dto.request.UserCreateRequest;
+import com.example.core.dto.request.UserUpdateRequest;
+import com.example.core.dto.response.UserUpdateResponse;
 
 import java.util.UUID;
 

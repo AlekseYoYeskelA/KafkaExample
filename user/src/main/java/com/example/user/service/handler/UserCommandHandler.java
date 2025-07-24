@@ -1,10 +1,11 @@
 package com.example.user.service.handler;
 
-import com.example.core.command.CompensateUserCommand;
-import com.example.core.command.CreateUserCommand;
-import com.example.core.command.UpdateUserCommand;
-import com.example.core.event.UserCreatedEvent;
-import com.example.core.response.UserUpdateResponse;
+
+import com.example.core.dto.command.CompensateUserCommand;
+import com.example.core.dto.command.CreateUserCommand;
+import com.example.core.dto.command.UpdateUserCommand;
+import com.example.core.dto.event.UserCreatedEvent;
+import com.example.core.dto.response.UserUpdateResponse;
 import com.example.user.model.entity.User;
 import com.example.user.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;

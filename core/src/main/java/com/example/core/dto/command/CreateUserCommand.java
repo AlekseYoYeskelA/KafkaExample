@@ -17,6 +17,8 @@ import java.util.UUID;
 public class CreateUserCommand {
     /** Идентификатор саги */
     private UUID sagaId;
+    /** Идентификатор пользователя */
+    private UUID userId;
     /** Имя пользователя */
     private String firstName;
     /** Фамилия пользователя */

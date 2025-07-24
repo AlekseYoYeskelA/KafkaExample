@@ -1,17 +1,14 @@
 package com.example.user.service.impl;
 
-
-
-import com.example.core.command.CompensateUserCommand;
-import com.example.core.command.CreateUserCommand;
-import com.example.core.command.UpdateUserCommand;
+import com.example.core.dto.command.CompensateUserCommand;
+import com.example.core.dto.command.CreateUserCommand;
+import com.example.core.dto.command.UpdateUserCommand;
 import com.example.user.exception.UserNotFoundException;
 import com.example.user.exception.UserUpdateException;
 import com.example.user.model.entity.User;
 import com.example.user.model.repository.UserRepository;
 import com.example.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +46,7 @@ public class UserServiceImpl implements UserService {
         log.info("Creating user: {}", command.getEmail());
 
         User user = User.builder()
+                .id(command.getUserId())
                 .firstName(command.getFirstName())
                 .lastName(command.getLastName())
                 .email(command.getEmail())
@@ -70,7 +68,8 @@ public class UserServiceImpl implements UserService {
      * @throws UserNotFoundException если пользователь не найден или удалён
      * @throws UserUpdateException   при сбое обновления
      */
-    @SneakyThrows
+
+
     @Override
     @Transactional
     public User updateUser(UpdateUserCommand command) {
@@ -90,8 +89,6 @@ public class UserServiceImpl implements UserService {
                 }
             }
         });
-
-        Thread.sleep(5000);
 
         // Эмуляция ошибки в 50% случаев
         if (random.nextBoolean()) {
